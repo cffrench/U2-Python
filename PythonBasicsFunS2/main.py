@@ -217,10 +217,12 @@ class Subject:
     # __init__() is a special method that initialized a new object
     # good practice is declare (and initialize) you instance-level methods there
     # self refers to the "current" AKA "invoking" object
-    def __init__(self, name, measurements={}):
-        self.sid = Subject.num_subjects # auto incrementing primary key
+    def __init__(self, name, measurements=None):
+        self.sid = Subject.num_subjects # incrementing primary key
         Subject.num_subjects += 1
         self.name = name 
+        if measurements is None:
+            measurements = {}
         self.measurements = measurements
 
     # __str__() is a special method that is implicitly called

@@ -219,11 +219,13 @@ class Subject:
     # initializer for new Subject objects (e.g. constructor)
     # self is like this
     # and refers to the "current" or "invoking" object
-    def __init__(self, name, measurements={}):
+    def __init__(self, name, measurements=None):
         # declare and initialize instance-level attributes
         self.sid = Subject.num_subjects
         Subject.num_subjects += 1
         self.name = name 
+        if measurements is None:
+            measurements = {}
         self.measurements = measurements
 
     # special method __str__() that is invoked anytime
@@ -236,12 +238,13 @@ class Subject:
         # probably should some error checking...
         self.measurements[timestamp] = value 
 
-spike = Subject("spike")
-print(spike)
-
 gooeyduck = Subject("gooeyduck")
 print(gooeyduck)
 
 gooeyduck.record_measurement("2-2-21 8:50AM", 1.55)
 print(gooeyduck)
 print(gooeyduck.measurements)
+
+# GS: note after class changing order to make sure spike's measurements are empty
+spike = Subject("spike")
+print(spike)
