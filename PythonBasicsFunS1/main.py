@@ -148,6 +148,18 @@ print("matrix deep copy after:", matrix_deep_copy)
 # in a nested list (e.g. table)
 # csv file: comma separated value file
 
+def convert_to_numeric(values):
+    # attempt to convert each value in the 1D list values to a numeric type
+    # if it values, skip the value
+    for i in range(len(values)):
+        try:
+            numeric_value = int(values[i])
+            # success!!
+            values[i] = numeric_value
+        except ValueError:
+            # failure
+            print(values[i], "could not be converted a numeric type")
+
 def read_table(filename):
     table = []
     # 1. open
@@ -156,11 +168,80 @@ def read_table(filename):
     infile = open(filename, "r") # "r" is for reading
     lines = infile.readlines()
     print(lines)
+    for line in lines:
+        # get rid of the newline character at the end of the line
+        line = line.strip() # remove leading and trailing whitespaces
+        # split the line into its individual values
+        values = line.split(",")
+        convert_to_numeric(values)
+        table.append(values)
     # TODO: write a loop to iterate through each line
     # convert the numeric values to numeric types
     infile.close()
 
     return table
 
+def write_table(filename, table):
+    # TODO: challenge: get rid of the extra
+    # newline that is written out
+    outfile = open(filename, "w")
+    for row in table:
+        for i in range(len(row) - 1):
+            outfile.write(str(row[i]) + ",")
+        outfile.write(str(row[i + 1]) + "\n")
+    outfile.close()
+
 table = read_table("msrp.csv")
 print(table)
+write_table("msrp_copy.csv", table)
+
+# classes 
+# class: a collection of state (attributes) and behavior (methods)
+# that completely describes something
+# object: an instance of a class
+
+class Subject:
+    """Represents a subject in a research study.
+
+    Attributes:
+        sid(int): a unique value that identifies each subject
+        name(str): name of the subject
+        measurements(dict of string:float): records study measurements for each subject
+
+        num_subjects(int): class-level attribute that keeps track of the total number of subjects
+
+    """
+    num_subjects = 0 # this is a class-level attribute!!
+    # means one num_subjects variable is shared amongst all subject objects
+    # DO NOT put your instance-level variable declarations here!!
+
+    # special method __init__()
+    # initializer for new Subject objects (e.g. constructor)
+    # self is like this
+    # and refers to the "current" or "invoking" object
+    def __init__(self, name, measurements={}):
+        # declare and initialize instance-level attributes
+        self.sid = Subject.num_subjects
+        Subject.num_subjects += 1
+        self.name = name 
+        self.measurements = measurements
+
+    # special method __str__() that is invoked anytime
+    # a string representation of an object is needed
+    def __str__(self):
+        return "SID: " + str(self.sid) + " NAME: " + self.name + \
+            " MEASUREMENTS: " + str(self.measurements)
+
+    def record_measurement(self, timestamp, value):
+        # probably should some error checking...
+        self.measurements[timestamp] = value 
+
+spike = Subject("spike")
+print(spike)
+
+gooeyduck = Subject("gooeyduck")
+print(gooeyduck)
+
+gooeyduck.record_measurement("2-2-21 8:50AM", 1.55)
+print(gooeyduck)
+print(gooeyduck.measurements)
